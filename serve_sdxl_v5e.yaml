@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stable-diffusion-deployment
+spec:
+  selector:
+    matchLabels:
+      app: max-diffusion-server
+  replicas: 1  # number of nodes in node-pool
+  template:
+    metadata:
+      labels:
+        app: max-diffusion-server
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-tpu-topology: 1x1  # target topology
+        cloud.google.com/gke-tpu-accelerator: tpu-v5-lite-podslice
+      volumes:
+       - name: dshm
+         emptyDir:
+              medium: Memory
+      containers:
+      - name: serve-stable-diffusion
+        image: us-east1-docker.pkg.dev/rick-vertex-ai/gke-llm/max-diffusion:latest
+        securityContext:
+          privileged: true
+        env:
+        - name: MODEL_NAME
+          value: 'stable_diffusion'
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            google.com/tpu: 1  # TPU chip request
+          limits:
+            google.com/tpu: 1  # TPU chip request
+      volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: max-diffusion-server
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+  labels:
+    app: max-diffusion-server 
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+      targetPort: http
+      name: http-max-diffusion-server
+  selector:
+    app: triton-inference-server
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: max-diffusion-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "ingress-max-diffusion"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: max-diffusion-server
+            port:
+              number: 8000
+             
