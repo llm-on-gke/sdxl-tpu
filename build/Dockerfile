@@ -1,6 +1,6 @@
 
 FROM python:3.10-slim
-WORKDIR /tmp
+WORKDIR /app
 COPY requirements.txt ./
 RUN python -m pip install --upgrade pip
 RUN pip install -U "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html
