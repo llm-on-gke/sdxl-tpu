@@ -31,9 +31,9 @@ spec:
         - containerPort: 8000
         resources:
           requests:
-            google.com/tpu: 1  # TPU chip request
+            google.com/tpu: 4  # TPU chip request
           limits:
-            google.com/tpu: 1  # TPU chip request
+            google.com/tpu: 4  # TPU chip request
         volumeMounts:
             - mountPath: /dev/shm
               name: dshm
