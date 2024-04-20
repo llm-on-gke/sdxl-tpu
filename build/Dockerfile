@@ -1,7 +1,8 @@
 
 FROM python:3.10-slim
 WORKDIR /app
-RUN apk add --no-cache git
+RUN apt-get -y update
+RUN apt-get -y install git
 COPY requirements.txt ./
 RUN python -m pip install --upgrade pip
 RUN pip install -U "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html
