@@ -1,5 +1,5 @@
 fastapi
-PIL
+pillow
 uvicorn
 jax>=0.4.23
 jaxlib>=0.4.23
