@@ -34,7 +34,7 @@ spec:
             google.com/tpu: 1  # TPU chip request
           limits:
             google.com/tpu: 1  # TPU chip request
-      volumeMounts:
+        volumeMounts:
             - mountPath: /dev/shm
               name: dshm
 
