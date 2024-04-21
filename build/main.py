@@ -40,7 +40,8 @@ async def info():
 cc.initialize_cache("~/jax_cache")
 
 NUM_DEVICES = jax.device_count()
-LOG.info("Devices Detected:"+NUM_DEVICES)
+if(NUM_DEVICES>0):
+   LOG.info("TPU Devices Detected:")
 # 1. Let's start by downloading the model and loading it into our pipeline class
 # Adhering to JAX's functional approach, the model's parameters are returned seperatetely and
 # will have to be passed to the pipeline during inference
