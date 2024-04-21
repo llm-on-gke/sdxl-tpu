@@ -2,7 +2,7 @@ import io
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
-
+import logging
 from PIL import Image
 import uvicorn
 #from diffusers import StableDiffusionPipeline
@@ -17,6 +17,10 @@ from jax import pmap
 from jax.experimental.compilation_cache import compilation_cache as cc
 from maxdiffusion import FlaxStableDiffusionXLPipeline
 
+LOG = logging.getLogger(__name__)
+LOG.info("API is starting up")
+LOG.info(uvicorn.Config.asgi_version)
+
 app = FastAPI()
 origins = ["*"]
 app.add_middleware(
@@ -27,7 +31,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 @app.get("/")
-def info():
+async def info():
+  LOG.info("Get max-diffusion info")
   return Response('Welcome to Max Diffusion', status_code=200)
 # Let's cache the model compilation, so that it doesn't take as long the next time around.
 
@@ -35,14 +40,14 @@ def info():
 cc.initialize_cache("~/jax_cache")
 
 NUM_DEVICES = jax.device_count()
-
+LOG.info("Devices Detected:"+NUM_DEVICES)
 # 1. Let's start by downloading the model and loading it into our pipeline class
 # Adhering to JAX's functional approach, the model's parameters are returned seperatetely and
 # will have to be passed to the pipeline during inference
 pipeline, params = FlaxStableDiffusionXLPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", revision="refs/pr/95", split_head_dim=True
 )
-
+LOG.info("parameters preparation")
 # 2. We cast all parameters to bfloat16 EXCEPT the scheduler which we leave in
 # float32 to keep maximal precision
 scheduler_state = params.pop("scheduler")
@@ -119,7 +124,7 @@ def aot_compile(
         .compile()
     )
 
-
+LOG.info("start initialized comppiling")
 start = time.time()
 print("Compiling ...")
 p_generate = aot_compile()
