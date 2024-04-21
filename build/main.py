@@ -26,6 +26,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def info():
+  return Response('Welcome to Max Diffusion', status_code=200)
 # Let's cache the model compilation, so that it doesn't take as long the next time around.
 
 # Load the Stable Diffusion model
