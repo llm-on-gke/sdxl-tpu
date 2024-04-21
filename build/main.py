@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 import logging
+import asyncio
 from PIL import Image
 import uvicorn
 #from diffusers import StableDiffusionPipeline
@@ -31,7 +32,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 @app.get("/")
-async def info():
+def info():
   LOG.info("Get max-diffusion info")
   return Response('Welcome to Max Diffusion', status_code=200)
 # Let's cache the model compilation, so that it doesn't take as long the next time around.
@@ -134,8 +135,8 @@ print(f"Compiled in {time.time() - start}")
 
 # 7. Let's now put it all together in a generate function.
 @app.post("/generate")
-async def generate(request: Request):
-    data = await request.json()
+def generate(request: Request):
+    data = request.json()
     prompt = data["prompt"]
     prompt_ids, neg_prompt_ids = tokenize_prompt(prompt, default_neg_prompt)
     prompt_ids, neg_prompt_ids, rng = replicate_all(prompt_ids, neg_prompt_ids, default_seed)
