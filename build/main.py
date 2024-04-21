@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 import logging
+import logging.config
 import asyncio
 from PIL import Image
 import uvicorn
@@ -17,6 +18,41 @@ from flax.jax_utils import replicate
 from jax import pmap
 from jax.experimental.compilation_cache import compilation_cache as cc
 from maxdiffusion import FlaxStableDiffusionXLPipeline
+
+ROOT_LEVEL = "INFO"
+
+LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "standard": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"},
+    },
+    "handlers": {
+        "default": {
+            "level": "INFO",
+            "formatter": "standard",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",  # Default is stderr
+        },
+    },
+    "loggers": {
+        "": {  # root logger
+            "level": ROOT_LEVEL, #"INFO",
+            "handlers": ["default"],
+            "propagate": False,
+        },
+        "uvicorn.error": {
+            "level": "DEBUG",
+            "handlers": ["default"],
+        },
+        "uvicorn.access": {
+            "level": "DEBUG",
+            "handlers": ["default"],
+        },
+    },
+}
+
+logging.config.dictConfig(LOGGING_CONFIG)
 
 LOG = logging.getLogger(__name__)
 LOG.info("API is starting up")
@@ -70,6 +106,7 @@ height = 1024
 # all inputs have to be tensors or strings
 # Let's tokenize the prompt and negative prompt
 def tokenize_prompt(prompt, neg_prompt):
+    LOG.info("tokenize prompts:")
     prompt_ids = pipeline.prepare_inputs(prompt)
     neg_prompt_ids = pipeline.prepare_inputs(neg_prompt)
     return prompt_ids, neg_prompt_ids
@@ -80,6 +117,7 @@ def tokenize_prompt(prompt, neg_prompt):
 # To make sure every device generates a different image, we create
 # different seeds for each image. The model parameters won't change
 # during inference so we do not wrap them into a function
+LOG.info("replicate params:")
 p_params = replicate(params)
 
 
@@ -104,6 +142,7 @@ def aot_compile(
     guidance_scale=default_guidance_scale,
     num_inference_steps=default_num_steps,
 ):
+    LOG.info("aot compiling:")
     prompt_ids, neg_prompt_ids = tokenize_prompt(prompt, negative_prompt)
     prompt_ids, neg_prompt_ids, rng = replicate_all(prompt_ids, neg_prompt_ids, seed)
     g = jnp.array([guidance_scale] * prompt_ids.shape[0], dtype=jnp.float32)
