@@ -1,6 +1,8 @@
 import io
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import Response
+from fastapi.middleware.cors import CORSMiddleware
+
 from PIL import Image
 import uvicorn
 #from diffusers import StableDiffusionPipeline
@@ -16,7 +18,14 @@ from jax.experimental.compilation_cache import compilation_cache as cc
 from maxdiffusion import FlaxStableDiffusionXLPipeline
 
 app = FastAPI()
-
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Let's cache the model compilation, so that it doesn't take as long the next time around.
 
 # Load the Stable Diffusion model
@@ -132,8 +141,4 @@ async def generate(request: Request):
 
     # Return the image as a response
     return Response(content=buffer.getvalue(), media_type="image/png")
-
-
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
 
