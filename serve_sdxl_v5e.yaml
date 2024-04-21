@@ -54,7 +54,7 @@ spec:
       targetPort: http
       name: http-max-diffusion-server
   selector:
-    app: triton-inference-server
+    app: max-diffusion-server
 
 ---
 apiVersion: networking.k8s.io/v1
