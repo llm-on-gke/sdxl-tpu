@@ -30,8 +30,8 @@ def index():
 def get_image():
     prompt = request.form['prompt']
     # Get model server IP
-    ip = os.environ['EXTERNAL_IP']
-    url="http://"+ip+":8000/generate"
+     
+    url=os.environ['SERVER_URL']+"/generate"
     # Send requst
     data = {'prompt': prompt}
     result=requests.post(url, json = data)
