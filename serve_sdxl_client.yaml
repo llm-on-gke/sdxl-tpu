@@ -25,7 +25,7 @@ spec:
             memory: "256Mi"
             cpu: "500m"
         ports:
-        - containerPort: 7860
+        - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
@@ -37,4 +37,4 @@ spec:
     app: max-diffusion-client
   ports:
   - port: 8080
-    targetPort: 7860
+    targetPort: 8080
