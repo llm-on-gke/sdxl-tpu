@@ -46,7 +46,7 @@ metadata:
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
   labels:
-    app: max-diffusion-server 
+    app: max-diffusion-server
 spec:
   type: NodePort
   ports:
