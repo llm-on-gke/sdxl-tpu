@@ -6,7 +6,6 @@ import logging
 import logging.config
 import asyncio
 from PIL import Image
-import uvicorn
 #from diffusers import StableDiffusionPipeline
 
 import time
