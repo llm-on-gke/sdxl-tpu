@@ -25,9 +25,9 @@ gcloud container clusters create $CLUSTER_NAME --location ${REGION} \
 
 #TPU:
 
-gcloud container node-pools create $CLUSTER_NAME-tpu    \
---location=$ZONE_1     --cluster=$CLUSTER_NAME     --node-locations=$REGION   
---machine-type=ct5lp-hightpu-1t    --num-nodes=0     --spot   --node-version=1.29  \
+gcloud container node-pools create $CLUSTER_NAME-tpu \
+--location=$REGION --cluster=$CLUSTER_NAME --node-locations=$ZONE_1 \ 
+--machine-type=ct5lp-hightpu-1t --num-nodes=0 --spot --node-version=1.29 \
 --ephemeral-storage-local-ssd=count=1 --enable-image-streaming \
---shielded-secure-boot   --shielded-integrity-monitoring \
---enable-autoscaling     --total-min-nodes 0     --total-max-nodes 2     --location-policy=ANY
+--shielded-secure-boot --shielded-integrity-monitoring \
+--enable-autoscaling --total-min-nodes 0 --total-max-nodes 2 --location-policy=ANY
