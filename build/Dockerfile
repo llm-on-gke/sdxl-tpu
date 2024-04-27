@@ -10,4 +10,4 @@ RUN pip install -r requirements.txt
 RUN pip install git+https://github.com/google/maxdiffusion.git
 COPY main.py ./
 EXPOSE 8000
-CMD ["gunicorn", "--bind", ":8000", "--workers", "2", "main:app"]
+CMD ["gunicorn", "--bind", ":8000", "--workers", "1", "main:app","-t","600"]
