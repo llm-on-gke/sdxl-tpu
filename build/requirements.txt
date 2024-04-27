@@ -1,5 +1,5 @@
 uvicorn[standard]==0.20.0
-gunicorn==21.2.0
+#gunicorn==21.2.0
 fastapi[all]==0.88.0
 pillow
 jax>=0.4.23

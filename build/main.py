@@ -7,7 +7,7 @@ import logging.config
 import asyncio
 from PIL import Image
 #from diffusers import StableDiffusionPipeline
-#import unicorn
+import uvicorn
 import time
 
 import jax
