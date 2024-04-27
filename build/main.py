@@ -67,9 +67,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 @app.get("/")
-def info():
-  LOG.info("Get max-diffusion info")
-  return Response('Welcome to Max Diffusion', status_code=200)
+async def read_root():
+    message = f"Hello world! From FastAPI running on Uvicorn with Gunicorn."
+    LOG.info(message)
+    return {"message": message}
 # Let's cache the model compilation, so that it doesn't take as long the next time around.
 
 # Load the Stable Diffusion model
