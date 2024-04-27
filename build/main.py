@@ -175,17 +175,21 @@ print(f"Compiled in {time.time() - start}")
 # 7. Let's now put it all together in a generate function.
 @app.post("/generate")
 def generate(request: Request):
+    LOG.info("start generate image")
     data = request.json()
     prompt = data["prompt"]
+    LOG.info(prompt)
     prompt_ids, neg_prompt_ids = tokenize_prompt(prompt, default_neg_prompt)
     prompt_ids, neg_prompt_ids, rng = replicate_all(prompt_ids, neg_prompt_ids, default_seed)
     g = jnp.array([default_guidance_scale] * prompt_ids.shape[0], dtype=jnp.float32)
     g = g[:, None]
+    LOG.info("call p_generate")
     images = p_generate(prompt_ids, p_params, rng, g, None, neg_prompt_ids)
 
     # convert the images to PIL
     images = images.reshape((images.shape[0] * images.shape[1],) + images.shape[-3:])
     buffer = io.BytesIO()
+    LOG.info("Save image")
     images[0].save(buffer, format="PNG")
 
     # Return the image as a response
