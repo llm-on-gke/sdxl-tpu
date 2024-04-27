@@ -167,16 +167,16 @@ def aot_compile(
 
 LOG.info("start initialized comppiling")
 start = time.time()
-print("Compiling ...")
+LOG.info("Compiling ...")
 p_generate = aot_compile()
-print(f"Compiled in {time.time() - start}")
+LOG.info(f"Compiled in {time.time() - start}")
 
 
 # 7. Let's now put it all together in a generate function.
 @app.post("/generate")
-def generate(request: Request):
+async def generate(request: Request):
     LOG.info("start generate image")
-    data = request.json()
+    data = await request.json()
     prompt = data["prompt"]
     LOG.info(prompt)
     prompt_ids, neg_prompt_ids = tokenize_prompt(prompt, default_neg_prompt)
