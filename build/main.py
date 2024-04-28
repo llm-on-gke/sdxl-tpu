@@ -188,6 +188,7 @@ async def generate(request: Request):
 
     # convert the images to PIL
     images = images.reshape((images.shape[0] * images.shape[1],) + images.shape[-3:])
+    images=pipeline.numpy_to_pil(np.array(images))
     buffer = io.BytesIO()
     LOG.info("Save image")
     for i, image in enumerate(images):
