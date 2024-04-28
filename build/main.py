@@ -190,7 +190,7 @@ async def generate(request: Request):
     images = images.reshape((images.shape[0] * images.shape[1],) + images.shape[-3:])
     buffer = io.BytesIO()
     LOG.info("Save image")
-    images[0].save(buffer, format="PNG")
+    await images[0].save(buffer, format="PNG")
 
     # Return the image as a response
     return Response(content=buffer.getvalue(), media_type="image/png")
