@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: webclient
-        image: us-east1-docker.pkg.dev/rick-vertex-ai/gke-llm/max-diffusion-client:latest
+        image: us-east1-docker.pkg.dev/rick-vertex-ai/gke-llm/max-diffusion-web:latest
         env:
           - name: SERVER_URL
             value: "http://CLusterIP:8000"

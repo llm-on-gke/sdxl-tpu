@@ -20,7 +20,7 @@ def load_config(title=None, icone=None):
 
 
 class Settings(BaseSettings):
-    API_URL: str = "http://localhost:3000"
+    API_URL: str = os.environ['SERVER_URL']
     ST_TITLE: str = "Stable-diffusion"
     ST_WIDE: str = True
     IMAGE_TYPES = ["png", "jpg", "jpeg", "webp", "bmp"]
