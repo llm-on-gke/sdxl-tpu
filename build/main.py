@@ -62,10 +62,15 @@ origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+async def health() -> Response:
+    """Health check."""
+    return Response(status_code=200)
+
 @app.get("/")
 async def read_root():
     message = f"Hello world! From FastAPI running on Uvicorn with Gunicorn."
@@ -199,3 +204,5 @@ async def generate(request: Request):
     # Return the image as a response
     return Response(content=buffer.getvalue(), media_type="image/png")
 
+if __name__ == "__main__":
+   uvicorn.run(app, host="0.0.0.0", port=8000, reload=False, log_level="debug")
