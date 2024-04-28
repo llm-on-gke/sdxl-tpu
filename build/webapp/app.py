@@ -2,7 +2,7 @@ from flask import Flask, request, send_file
 import requests
 import os
 from PIL import Image
-from io import StringIO
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -37,10 +37,10 @@ def get_image():
     result=requests.post(url, json = data)
     # Get the file name from the request.
     filename = "stable_diffusion_images.jpg"
-    content = Image.open(StringIO(result.content))
+    content = Image.open(BytesIO(result.content))
     content.save(filename)
     # Serve the generated file.
-    return send_file(filename, mimetype="image/jpeg")
+    return send_file(filename, mimetype="image/png")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
