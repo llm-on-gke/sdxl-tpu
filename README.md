@@ -330,9 +330,9 @@ We use type: LoadBalancer to expose webapp to external public. Update this file 
 
 ```
 kubectl apply -f serve_sdxl_client.yaml
-Once the webapp deployment completed,
 ```
-you may test text to image capabilities from browser:
+Once the webapp deployment completed, you may test text to image capabilities from browser:
+http://webappServiceIP:8080/
 
 Image generated after 3–5s( displaying only first image from inference), which is quite performance efficient for Cloud TPU v5e based on Single-host serving for one single v5e chips.
 
